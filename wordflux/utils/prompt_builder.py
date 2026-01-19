@@ -1,5 +1,5 @@
 class PromptBuilder:
-    """Xây dựng prompts cho OpenAI API"""
+    """Xây dựng prompts cho AI model"""
     
     def __init__(self, source_lang: str, target_lang: str):
         """Khởi tạo PromptBuilder"""

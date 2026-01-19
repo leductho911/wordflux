@@ -32,14 +32,15 @@ def main():
 
     input_file = args.input_file
     output_dir = args.output_dir
-    openai_api_key = config.get("openai_api_key")
-    if not openai_api_key:
-        raise ValueError("OpenAI API key not found in config. Please check your config.yaml file.")
+    gemini_api_key = config.get("gemini_api_key")
+    if not gemini_api_key:
+        raise ValueError("Gemini API key not found in config. Please check your config.yaml file.")
     model = config.get("model")
     source_lang = config.get("source_lang")
     target_lang = config.get("target_lang")
     max_chunk_size = config.get("max_chunk_size")
     max_concurrent = config.get("max_concurrent")
+    requests_per_minute = config.get("requests_per_minute", 60)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -49,7 +50,7 @@ def main():
     spinner = Spinner("Processing DOCX translation")
     spinner.start()
     try:
-        docx_translator = DocxTranslator(input_file, output_dir, openai_api_key, model, source_lang, target_lang, max_chunk_size, max_concurrent)
+        docx_translator = DocxTranslator(input_file, output_dir, gemini_api_key, model, source_lang, target_lang, max_chunk_size, max_concurrent, requests_per_minute)
         docx_translator.translate()
         spinner.stop()
         print(f"✅ Translation completed successfully!\n→ Output: {docx_translator.get_output_path()}")

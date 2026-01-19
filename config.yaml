@@ -1,5 +1,6 @@
-openai_api_key: "" # Your OpenAI API key here
-model: "gpt-4o-mini" # Default model is gpt-4o-mini. But you can change it to other models like gpt-5, gpt-5-mini, gpt-5-nano, etc.
+gemini_api_key: "AIzaSyB7AHiCU_G9nyYIsYKWx9zi27mZLpVFkVo" # Your Google Gemini API key here
+# openai_api_key: "" 
+model: "gemini-2.5-flash" # Default model is gemini-1.5-flash.
 
 # Translation Settings
 source_lang: "English"
@@ -8,3 +9,4 @@ target_lang: "Vietnamese"
 # Performance Settings
 max_concurrent: 100
 max_chunk_size: 5000
+requests_per_minute: 4 # Limit RPM to Avoid 429 Errors

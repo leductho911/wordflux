@@ -3,8 +3,9 @@ import asyncio
 import os
 from wordflux.document.document import RunInfo, TextSegment, TableCellSegment, ChartSegment, SmartArtSegment
 from wordflux.utils.decorator import timer, log_errors
-from wordflux.utils.openai_client import OpenAIClientManager
+from wordflux.utils.gemini_client import GeminiClientManager
 from wordflux.utils.prompt_builder import PromptBuilder
+from wordflux.utils.rate_limiter import RateLimiter
 import logging
 import re
 from collections import defaultdict
@@ -14,9 +15,9 @@ logging.basicConfig(level=logging.WARNING)
 
 
 class Translator:
-    """Dịch nội dung từ checkpoint file sử dụng OpenAI API với async"""
+    """Dịch nội dung từ checkpoint file sử dụng Google Gemini API với async"""
     
-    def __init__(self, checkpoint_file: str, openai_api_key: str, model: str = "gpt-4o-mini", source_lang: str = "English", target_lang: str = "Vietnamese", max_chunk_size: int = 5000, max_concurrent: int = 100):
+    def __init__(self, checkpoint_file: str, gemini_api_key: str, model: str = "gemini-1.5-flash", source_lang: str = "English", target_lang: str = "Vietnamese", max_chunk_size: int = 5000, max_concurrent: int = 100, requests_per_minute: int = 60):
         """
         Khởi tạo Translator
         
@@ -27,7 +28,7 @@ class Translator:
         self.checkpoint_file = checkpoint_file
         
         # Khởi tạo OpenAI client manager
-        self.client_manager = OpenAIClientManager(openai_api_key=openai_api_key)
+        self.client_manager = GeminiClientManager(gemini_api_key=gemini_api_key)
         self.client = self.client_manager.get_client()
         
         # Load config
@@ -36,6 +37,7 @@ class Translator:
         self.target_lang = target_lang
         self.max_chunk_size = max_chunk_size
         self.max_concurrent = max_concurrent
+        self.requests_per_minute = requests_per_minute
         
         
         # Khởi tạo prompt builder
@@ -43,19 +45,25 @@ class Translator:
         
         self.logger = logging.getLogger(self.__class__.__name__)
         self.semaphore = asyncio.Semaphore(self.max_concurrent)
+        self.rate_limiter = RateLimiter(self.requests_per_minute)
     
     async def _translate_text(self, text: str, context: str = "general") -> str:
-        """Dịch một đoạn text sử dụng OpenAI API"""
+        """Dịch một đoạn text sử dụng Google Gemini API"""
+        await self.rate_limiter.acquire()
         async with self.semaphore:
             try:
-                messages = self.prompt_builder.build_messages(text)
+                system_instruction = self.prompt_builder.build_system_prompt()
+                user_msg = self.prompt_builder.build_user_prompt(text)
                 
-                response = await self.client.chat.completions.create(
+                response = await self.client.aio.models.generate_content(
                     model=self.model,
-                    messages=messages,
+                    contents=user_msg,
+                    config={
+                        "system_instruction": system_instruction,
+                    }
                 )
                 
-                return response.choices[0].message.content.strip()
+                return response.text.strip()
             except Exception as e:
                 self.logger.error(f"   ⚠️  Translation error: {e}")
                 return text  # Trả về text gốc nếu có lỗi

@@ -1,93 +1,67 @@
 # WordFlux 🌀
-
-> **Translate DOCX using OpenAI - Preserve Format**
-
-WordFlux is a powerful and intelligent tool for translating Microsoft Word documents (.docx) using OpenAI API while preserving the original formatting, structure, and layout completely.
+ 
+> **Translate DOCX using Google Gemini - Preserve Format**
+ 
+WordFlux is a powerful and intelligent tool for translating Microsoft Word documents (.docx) using Google Gemini API while preserving the original formatting, structure, and layout completely.
 <img width="1565" height="997" alt="image" src="https://github.com/user-attachments/assets/dc2ae795-75c4-4a63-a4ef-2fa29d12dcfb" />
-
-
-
-
+ 
+ 
+ 
+ 
 ## 🚀 Installation
-
+ 
 ### System Requirements
 - Python 3.12+
-- OpenAI API key
-
+- Google Gemini API key
+ 
 ### Install from pip
-
+ 
 ```bash
 pip install wordflux
 ```
+ 
+## 🏃‍♂️ How to Run
 
-## 🔑 API Key Setup
+### Command Line Interface (CLI)
 
-After installation, you need to set up your OpenAI API key. 
-
-```python
-from wordflux import DocxTranslator
-
-# Advanced configuration
-translator = DocxTranslator(
-    input_file="complex_document.docx",
-    output_dir="./translated_docs",
-    openai_api_key="sk-your-openai-api-key-here",
-    model="gpt-5",                    # Use more powerful model
-    source_lang="English",
-    target_lang="French",
-    max_chunk_size=3000,              # Smaller chunks for complex docs
-    max_concurrent=50                 # Fewer concurrent requests
-)
-
-# Step-by-step processing
-translator.translate()
-
-print("Translation completed!")
-```
-
-
-### Install from source
->Video hướng dẫn cài đặt bằng tiếng Việt: https://www.facebook.com/100027984306273/videos/1540289863762450/ 
+After installation and configuration (see below), you can run WordFlux directly from your terminal:
 
 ```bash
-# Clone repository
-git clone https://github.com/pnnbao97/wordflux.git
-cd wordflux
+# Basic usage
+wordflux input_document.docx
 
-# Install dependencies
-pip install -e .
+# Specify output directory
+wordflux input_document.docx --output_dir my_translations
 ```
 
-### Manual dependency installation
+### 🔧 Configuration
 
-```bash
-pip install openai>=2.3.0 python-docx>=1.2.0 pyyaml>=6.0.3 tqdm>=4.67.1
-```
-
-## ⚙️ Configuration
-
-Create a `config.yaml` file in the root directory:
+To run the tool, you need to create a `config.yaml` file in your working directory.
 
 ```yaml
-# OpenAI Configuration
-openai_api_key: "sk-your-openai-api-key-here"  # Replace with your API key
-model: "gpt-4o-mini"  # Can use gpt-4, gpt-3.5-turbo, etc.
+# Google Gemini Configuration
+gemini_api_key: "your-gemini-api-key-here"  # Replace with your actual API key
+model: "gemini-1.5-flash"
 
 # Translation Settings
 source_lang: "English"
 target_lang: "Vietnamese"
 
 # Performance Settings
-max_concurrent: 100      # Maximum concurrent requests
-max_chunk_size: 5000     # Maximum chunk size (characters)
+max_concurrent: 100
+max_chunk_size: 5000
+```
+ 
+### Manual dependency installation
+ 
+```bash
+pip install openai>=2.3.0 python-docx>=1.2.0 pyyaml>=6.0.3 tqdm>=4.67.1 google-genai>=0.1.0
 ```
 
-### Supported OpenAI Models
-- `gpt-5-mini`
-- `gpt-5`
-- `gpt-5-pro`
-- `gpt-5-nano`
-- And other OpenAI models
+### Supported Google Gemini Models
+- `gemini-1.5-flash`
+- `gemini-1.5-pro`
+- And other Gemini models
 
 ## 📁 Project Structure
 
@@ -112,7 +86,7 @@ wordflux/
     └── 🛠️ utils/             # Utilities
         ├── decorator.py      # Decorators (timer, retry, etc.)
         ├── is_numeric.py     # Helper functions
-        ├── openai_client.py  # OpenAI client manager
+        ├── gemini_client.py  # Gemini client manager
         ├── prompt_builder.py # Build prompts
         └── spinner.py        # Loading spinner
 ```
@@ -130,7 +104,7 @@ This project is distributed under the MIT License. See the `LICENSE` file for mo
 
 ## 🙏 Acknowledgments
 
-- OpenAI API for powerful translation capabilities
+- Google Gemini API for powerful translation capabilities
 - python-docx library for DOCX file processing
 - Python community for supporting libraries
 
