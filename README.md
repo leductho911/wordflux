@@ -19,6 +19,14 @@ WordFlux is a powerful and intelligent tool for translating Microsoft Word docum
 ```bash
 pip install wordflux
 ```
+
+> **Note:** If you encounter `wordflux : The term 'wordflux' is not recognized` after installation, you may need to add Python's scripts directory to your system's PATH environment variable (e.g., `C:\Users\<Username>\AppData\Roaming\Python\Python31x\Scripts` on Windows).
+
+### Install using uv (Recommended)
+
+```bash
+uv tool install wordflux
+```
  
 ## 🏃‍♂️ How to Run
 
@@ -28,6 +36,10 @@ After installation and configuration (see below), you can run WordFlux directly 
 
 ```bash
 # Basic usage
+uv run wordflux 1.docx
+or
+python -m wordflux.main 1.docx
+or
 wordflux input_document.docx
 
 # Specify output directory
@@ -67,7 +79,6 @@ pip install openai>=2.3.0 python-docx>=1.2.0 pyyaml>=6.0.3 tqdm>=4.67.1 google-g
 
 ```
 wordflux/
-├── 📄 main.py                 # Entry point
 ├── ⚙️ config.yaml            # Configuration
 ├── 📋 pyproject.toml         # Project metadata
 ├── 📖 README.md              # This documentation
@@ -76,6 +87,7 @@ wordflux/
 │   └── document_checkpoint.json
 └── 📦 wordflux/              # Main package
     ├── 📄 __init__.py
+    ├── 📄 main.py            # Entry point
     ├── 🔧 docxtranslator.py  # Main class
     ├── 📄 document/          # Data models
     │   └── document.py
